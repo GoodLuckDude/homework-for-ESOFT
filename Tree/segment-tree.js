@@ -12,6 +12,7 @@ function dummySegmentTree(array, fn, N) {
 
 function segmentTree(array, fn, N) {
   var tree = [];
+  var tree2 = [];
   function build (pos, tl, tr) {
     if (tr < 0) {return}
     if (tl == tr) {
