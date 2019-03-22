@@ -25,17 +25,22 @@ function segmentTree(array, fn, N) {
   };
   build(1, 0, array.length-1);
   return function(from, to){
-    if (from < 0 || to < from || to > array.length) {throw new Error("This range is not valid")}
-    function count (pos, tl, tr)
+    if (from+1 < 0 || to+1 < from+1 || to+1 > array.length) {throw new Error("This range is not valid")}
+    function count (pos, tl, tr){
+      if (to+1 < tl || from+1 > tr || tr < 0) {return N}
+      if (tl == tr) {return tree[pos]}
+      if (from+1 == tl && to+1 == tr) {return tree[pos]}
+      var tm = Math.floor((tl + tr) / 2);
+      return fn(count(pos*2, tl, tm), count(pos*2+1, tm+1, tr))
+    };
+    return count(1, 1, tree.length)
 
 
 
-
-
-    var range = array.slice(from, to);
-    return range.reduce(function(answer, current) {
-      return fn(answer, current)
-    }, N);
+    // var range = array.slice(from, to);
+    // return range.reduce(function(answer, current) {
+    //   return fn(answer, current)
+    // }, N);
 
 
   };
