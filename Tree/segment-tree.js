@@ -14,46 +14,38 @@ function segmentTree(array, fn, N) {
   var tree = [];
   function build (pos, tl, tr) {
     if (tr < 0) {return}
-    if (tl == tr) {
-      tree[pos] = fn(array[tl], N) 
+    if (tl == tr)  {tree[pos] = array[tl]
     } else {
       var tm = Math.floor((tl + tr) / 2);
-      build(pos*2, tl, tm);
-      build(pos*2+1, tm+1, tr);
-      tree[pos] = fn(tree[pos*2], tree[pos*2+1]);
+      build(pos*2+1, tl, tm);
+      build(pos*2+2, tm+1, tr);
+      tree[pos] = fn(tree[pos*2+1], tree[pos*2+2]);
     }
   };
-  build(1, 0, array.length-1);
+  build(0, 0, array.length-1);
+
   return function(from, to){
-    if (from+1 < 0 || to+1 < from+1 || to+1 > array.length) {throw new Error("This range is not valid")}
+    if (to == from) {return N}
+    if (from < 0 || to > array.length || to < from) {throw new Error("This range is not valid")}
     function count (pos, tl, tr){
-      if (to+1 < tl || from+1 > tr || tr < 0) {return N}
-      if (tl == tr) {return tree[pos]}
-      if (from+1 == tl && to+1 == tr) {return tree[pos]}
+      if (to-1 < tl || from > tr || tr < 0) {return N}
+      if (tl >= from && tr <= to-1) {return tree[pos]}
       var tm = Math.floor((tl + tr) / 2);
-      return fn(count(pos*2, tl, tm), count(pos*2+1, tm+1, tr))
+      return fn(count(pos*2+1, tl, tm), count(pos*2+2, tm+1, tr))
     };
-    return count(1, 1, tree.length)
-
-
+    return count(0, 0, array.length-1)
 
     // var range = array.slice(from, to);
     // return range.reduce(function(answer, current) {
     //   return fn(answer, current)
     // }, N);
 
-
   };
-  // return function(from, to) {
-  //   function foo (pos, tl, tr) {
-  //     if (from == tl && to == tr) {
-  //       return array[pos]
-  //     }
-  // }
-  // }
 };
-tree = recursiveSegmentTree([1, 2, 3, 4,], mul, 1);
-var i = 10;
+
+tree = segmentTree([[1, 2, 3, 4], [1, 2, 3, 5], [1, 2, 3, 6], [1, 2, 3, 7]], mul, 1);
+var i = tree(0, 2);
+i = 10;
 function recursiveSegmentTree(array, fn, N) {
   return segmentTree(array, fn, N);
 }
