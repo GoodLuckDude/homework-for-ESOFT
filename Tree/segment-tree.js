@@ -1,20 +1,44 @@
 function dummySegmentTree(array, fn, N) {
-  return function (from, to) {
-    let result = N;
 
+  return function calc (from, to) {
+    let result = N;
     for (let i = from; i < to; i++) {
       result = fn(result, array[i]);
     }
-
     return result;
   }
 }
+
+function create(array, fn, N) {
+
+  if (!Array.isArray(array[0])) {
+    return dummySegmentTree(array, fn, N)
+  }
+  
+  return(function(l, r) {
+    
+  })
+
+}
+
+
+var a = [
+  [1, 2, 3],
+  [1, 1, 1],
+];
+
+var i = dummySegmentTree(a, sum, 0);
+var x = i(0, 2)(0, 1);
 
 function segmentTree(array, fn, N) {
   var tree = [];
   function build (pos, tl, tr) {
     if (tr < 0) {return}
-    if (tl == tr)  {tree[pos] = array[tl]
+    if (tl == tr)  {
+      tree[pos] = array[tl];
+      if (Array.isArray(array[tl])){
+        array[tl] = (segmentTree(array[tl], fn, N));
+      }
     } else {
       var tm = Math.floor((tl + tr) / 2);
       build(pos*2+1, tl, tm);
@@ -43,10 +67,11 @@ function segmentTree(array, fn, N) {
   };
 };
 
-tree = segmentTree([[1, 2, 3, 4], [1, 2, 3, 5], [1, 2, 3, 6], [1, 2, 3, 7]], mul, 1);
-var i = tree(0, 2);
-i = 10;
+
 function recursiveSegmentTree(array, fn, N) {
+  if(Array.isArray(array[0])) {
+    return segmentTree(array, fn, N)
+  }
   return segmentTree(array, fn, N);
 }
 
