@@ -1,6 +1,5 @@
 function dummySegmentTree(array, fn, N) {
-
-  return function calc (from, to) {
+  return function(from, to){
     let result = N;
     for (let i = from; i < to; i++) {
       result = fn(result, array[i]);
@@ -10,25 +9,79 @@ function dummySegmentTree(array, fn, N) {
 }
 
 function create(array, fn, N) {
-
-  if (!Array.isArray(array[0])) {
-    return dummySegmentTree(array, fn, N)
-  }
-  
-  return(function(l, r) {
+  return function(from, to) {
     
-  })
+    if(Array.isArray(array[0])) {
+      return function(l, r) {
+        var newAr = array.map(function(item, index){
+          if (index < from || index > to) {return N}
+          return create(item, fn, N)(l, r)
+        });
+        return newAr.reduce(function(result, current){
+            return fn(result, current)
+          }, N)
+      }
 
+
+
+
+
+    } else {
+     return dummySegmentTree(array, fn, N)(from, to)
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  // var result;
+  // if (!Array.isArray(array[0])) {
+  //   return dummySegmentTree(array, fn, N)
+  // }
+  
+  // return(function(from, to) {
+  //   return function (l, r) {
+  //     var answer = N;
+  //     for (let i = from; i < to; i++) {
+  //       answer = fn(dummySegmentTree(array[i], fn, N)(l, r), answer)
+  //     }
+  //     return answer
+  //   }
+  // })
+  }
 }
 
 
-var a = [
-  [1, 2, 3],
-  [1, 1, 1],
+var a = [ 
+  [0, 3, 5],
+  [1, 3, 5],
+  [1, 3, 5]
 ];
 
-var i = dummySegmentTree(a, sum, 0);
-var x = i(0, 2)(0, 1);
+var j = create(a, mul, 1);
+alert (j(0, 3)(0,3));
+
 
 function segmentTree(array, fn, N) {
   var tree = [];
@@ -69,10 +122,7 @@ function segmentTree(array, fn, N) {
 
 
 function recursiveSegmentTree(array, fn, N) {
-  if(Array.isArray(array[0])) {
-    return segmentTree(array, fn, N)
-  }
-  return segmentTree(array, fn, N);
+  return create(array, fn, N);
 }
 
 function getElfTree(array) {
