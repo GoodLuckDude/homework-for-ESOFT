@@ -8,31 +8,6 @@ function dummySegmentTree(array, fn, N) {
   }
 }
 
-function create(array, fn, N) {
-  return function(from, to) {
-    
-    if(Array.isArray(array[0])) {
-      return function(l, r) {
-        var newAr = array.map(function(item, index){
-          if (index < from || index > to) {return N}
-          return create(item, fn, N)(l, r)
-        });
-        return newAr.reduce(function(result, current){
-            return fn(result, current)
-          }, N)
-      }
-
-
-
-
-
-    } else {
-     return dummySegmentTree(array, fn, N)(from, to)
-    }
-
-
-  }
-}
 function fnToRecurce(a, b, fn, N){
   if (Array.isArray(a)) {
     var small;
@@ -90,74 +65,49 @@ function segmentTree(array, fn, N) {
       return N
     }
   }
-  return function fromTo(from, to){
-    if (from == to) {return returnN(tree)}
-    if (from < 0 || to > array.length || to < from) {throw new Error("This range is not valid")}
-    function count (pos, tl, tr){
-      if (to-1 < tl || from > tr || tr < 0) {return returnN(tree)}
-      if (tl >= from && tr <= to-1) {return tree[pos]}
-      var tm = Math.floor((tl + tr) / 2);
-      return fnToRecurce(count(pos*2+1, tl, tm), count(pos*2+2, tm+1, tr), fn, N)
-    };
-    result = count(0, 0, (tree.length-1)/2);
-    if (Array.isArray(result)) {
-      tree = result;
-      return fromTo;
-    } else {
-      return result
+  function newTree(tree){
+    function fromTo(from, to){
+      if (from == to) {return returnN(tree)}
+      if (from < 0 || to > array.length || to < from) {throw new Error("This range is not valid")}
+      function count (pos, tl, tr){
+        if (to-1 < tl || from > tr || tr < 0) {return returnN(tree)}
+        if (tl >= from && tr <= to-1) {return tree[pos]}
+        var tm = Math.floor((tl + tr) / 2);
+        return fnToRecurce(count(pos*2+1, tl, tm), count(pos*2+2, tm+1, tr), fn, N)
+      };
+      result = count(0, 0, (tree.length-1)/2);
+      if (Array.isArray(result)) {
+        return newTree(result);
+      } else {
+        return result
+      }
     }
-
-  };
+    return fromTo
+  }
+  return newTree(tree)
 };
 
 
 function recursiveSegmentTree(array, fn, N) {
-  return segmentTree(array, fn, N)  
+  return segmentTree(array, fn, N)
 }
 
-var ar = [
-  // [[1, 2, 3, 4], [1, 2, 3, 4], [1, 2, 3, 4], [1, 2, 3, 4]],
-  // [[1, 2, 3, 4], [1, 2, 3, 4], [1, 2, 3, 4], [1, 2, 3, 4]],
-  // [[1, 2, 3, 4], [1, 2, 3, 4], [1, 2, 3, 4], [1, 2, 3, 4]],
-  // [[1, 2, 3, 4], [1, 2, 3, 4], [1, 2, 3, 4], [1, 2, 3, 4]],
-  [[0, 1], [0, 0], [1, 1], [0, 0]],
-  [[0, 0], [1, 0], [1, 0], [0, 1]],
-  [[0, 0], [1, 0], [0, 1], [1, 0]],
-  [[1, 0], [0, 0], [0, 0], [0, 0]],
-  // [1, 0, 1, 1],
-  // [0, 1, 0, 0],
-  // [0, 0, 0, 1],
-  // [1, 1, 1, 1]
-];
-
-
-
-var eee = [ 
-  [136, 60, 76, 28, 32, 36, 40],
-  [36, 14, 22, 6, 8, 10, 12],
-  [100, 46, 54, 22, 24, 26, 28],
-  [10, 3, 7, 1, 2, 3, 4],
-  [26, 11, 15, 5, 6, 7, 8],
-  [42, 19, 23, 9, 10, 11, 12],
-  [58, 27, 31, 13, 14, 15, 16],
-];
-
-
-var tree = recursiveSegmentTree(ar, sum, 0);
-var result = [];
-result.push(tree(0, 1)(0, 1)(0, 1));
-// result.push(tree(3, 4)(0, 1)(0, 1));
-// result.push(tree(1, 2)(3, 4)(1, 2));
-// result.push(tree(2, 3)(0, 4)(0, 2));
-// result.push(tree(2, 3)(1, 4)(0, 2));
-// result.push(tree(0, 4)(2, 3)(0, 2));
-// result.push(tree(0, 4)(0, 4)(0, 2));
-result = 0;
 function getElfTree(array) {
   return recursiveSegmentTree(array, sum, 0);
 }
 
 function assignEqually(tree, wishes, stash, elves, gems, week) {
+
+  // if heven't new gems { return {} }
+  //else {
+  sumElvesGems = tree(0, allElves.length)(0, allGems.length)(0, week);
+  avarageAmountGems = Math.ceil(sumElvesGems/allElves.length-1);
+  for(let i = 0; i < allElves.length; i++) {
+    if ( tree(i, i+1)(0, allGems.length)(0, week) < avarageAmountGems ) {
+      //add new gem (stash.key[0]) to Elf[i]
+      //decrease stash.key[0] if == 0 => delete stash.key[0]
+    };
+  }
   return {};
 }
 
