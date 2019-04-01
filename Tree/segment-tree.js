@@ -68,7 +68,7 @@ function segmentTree(array, fn, N) {
   function newTree(tree){
     function fromTo(from, to){
       if (from == to) {return returnN(tree)}
-      if (from < 0 || to > array.length || to < from) {throw new Error("This range is not valid")}
+      if (from < 0 || to > (tree.length+1)/2 || to < from) {throw new Error("This range is not valid")}
       function count (pos, tl, tr){
         if (to-1 < tl || from > tr || tr < 0) {return returnN(tree)}
         if (tl >= from && tr <= to-1) {return tree[pos]}
@@ -97,26 +97,107 @@ function getElfTree(array) {
 }
 
 function assignEqually(tree, wishes, stash, elves, gems, week) {
+  var assignment = {};
+  var whoNeed;
+  var idxWhoNeed;
+  var minGemsCount = Infinity;
+  var keysOfStash;
+  var currentAmountGems = [];                  // [i] = amount of elf's (elves[i]) gems
 
-  // if heven't new gems { return {} }
-  //else {
-  sumElvesGems = tree(0, allElves.length)(0, allGems.length)(0, week);
-  avarageAmountGems = Math.ceil(sumElvesGems/allElves.length-1);
-  for(let i = 0; i < allElves.length; i++) {
-    if ( tree(i, i+1)(0, allGems.length)(0, week) < avarageAmountGems ) {
-      //add new gem (stash.key[0]) to Elf[i]
-      //decrease stash.key[0] if == 0 => delete stash.key[0]
-    };
+  function findWhoNeed() {
+    for (let i = 0; i < elves.length; i++) {
+      if (currentAmountGems[i] <= minGemsCount) {
+        minGemsCount = currentAmountGems[i];
+        whoNeed = elves[i];
+        idxWhoNeed = i;
+      }
+    }
   }
-  return {};
+  function createAssignment() {
+    findWhoNeed();
+    keysOfStash = Object.keys(stash);
+    if (keysOfStash.length > 0) {
+      currentAmountGems[idxWhoNeed] += 1;
+      if(!assignment[whoNeed]) { assignment[whoNeed] = {} }
+      stash[keysOfStash[0]] -= 1;
+      if (assignment[whoNeed][keysOfStash[0]]) {
+        assignment[whoNeed][keysOfStash[0]] += 1
+      } else {
+        assignment[whoNeed][keysOfStash[0]] = 1
+      }
+      if (stash[keysOfStash[0]] == 0) { delete stash[keysOfStash[0]] }
+      minGemsCount++;
+      createAssignment();
+    }
+  }
+  for (let i = 0; i < elves.length; i++) {      //counting of elves's gems
+    let count = tree(i, i+1)(0, gems.length)(0, week);
+    currentAmountGems.push(count)
+  }
+  createAssignment();
+  return assignment;
 }
 
+
 function assignAtLeastOne(tree, wishes, stash, elves, gems, week) {
-  return {};
+  var assignment = {};
+  var i = 0;
+
+  function createAssignment() {
+    var keysOfStash = Object.keys(stash);
+    if (keysOfStash.length == 0) {return}
+    if (!assignment[elves[i]]) {
+      assignment[elves[i]] = {};
+      assignment[elves[i]][keysOfStash[0]] = 1;
+    } else if ( !assignment[elves[i]][keysOfStash[0]] ) {
+      assignment[elves[i]][keysOfStash[0]] = 1;
+    } else {
+      assignment[elves[i]][keysOfStash[0]] += 1;
+    }
+    stash[keysOfStash[0]] -= 1;
+    if(stash[keysOfStash[0]] == 0) {delete stash[keysOfStash[0]]}
+    i++;
+    createAssignment();
+  }
+
+  createAssignment();
+  return assignment;
 }
 
 function assignPreferredGems(tree, wishes, stash, elves, gems) {
-  return {};
+  var assignment = {};
+  var whoNeed;
+  var idxWhoNeed;
+  var keysOfStash;
+  function findWhoNeed() {
+    keysOfStash = Object.keys(stash);
+    let idx = gems.indexOf(keysOfStash[0]);
+    let maxWishes = -Infinity;
+    wishes.forEach(function(item, i, array) {
+      if (item[idx] >= maxWishes) {
+        idxWhoNeed = i;
+        whoNeed = elves[i];
+      }
+    });
+  }
+  function createAssignment() {
+    findWhoNeed();
+    keysOfStash = Object.keys(stash);
+    if (keysOfStash.length > 0) {
+      if(!assignment[whoNeed]) { assignment[whoNeed] = {} }
+      stash[keysOfStash[0]] -= 1;
+      if (assignment[whoNeed][keysOfStash[0]]) {
+        assignment[whoNeed][keysOfStash[0]] += 1
+      } else {
+        assignment[whoNeed][keysOfStash[0]] = 1
+      }
+      if (stash[keysOfStash[0]] == 0) { delete stash[keysOfStash[0]] }
+      createAssignment();
+    }
+  }
+  createAssignment();
+
+  return assignment;
 }
 
 function nextState(state, assignment, elves, gems) {
