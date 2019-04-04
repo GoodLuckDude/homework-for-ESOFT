@@ -19,6 +19,8 @@ function fnToRecurce(a, b, fn, N){
       small = a;
       return b
     }(a, b)
+    if (big.length == 0) {big.push(N)}
+    if (small.length == 0) {small.push(N)}
     var newAr = big.map(function (item, i) {
       if (!small[i]) {return item}
       var result = fnToRecurce(item, small[i], fn, N);
@@ -52,25 +54,26 @@ function buildTree(array, fn, N) {
   return tree;
 }
 
+function returnN(segment, N) {
+  if (Array.isArray(segment[0])) {
+    var newN = [];
+    for (let i = 0; i < segment[0].length; i++){
+      newN.push(returnN(segment[0], N))
+    }
+    return newN
+  } else {
+    return N
+  }
+}
+
 function segmentTree(array, fn, N) {
   var tree = buildTree(array,fn, N);
-  function returnN(segment) {
-    if (Array.isArray(segment[0])) {
-      var newN = [];
-      for (let i = 0; i < segment[0].length; i++){
-        newN.push(returnN(segment[0]))
-      }
-      return newN
-    } else {
-      return N
-    }
-  }
   function newTree(tree){
     function fromTo(from, to){
-      if (from == to) {return returnN(tree)}
+      if (from == to) {return returnN(tree, N)}
       if (from < 0 || to > (tree.length+1)/2 || to < from) {throw new Error("This range is not valid")}
       function count (pos, tl, tr){
-        if (to-1 < tl || from > tr || tr < 0) {return returnN(tree)}
+        if (to-1 < tl || from > tr || tr < 0) {return returnN(tree, N)}
         if (tl >= from && tr <= to-1) {return tree[pos]}
         var tm = Math.floor((tl + tr) / 2);
         return fnToRecurce(count(pos*2+1, tl, tm), count(pos*2+2, tm+1, tr), fn, N)
@@ -157,6 +160,7 @@ function assignAtLeastOne(tree, wishes, stash, elves, gems, week) {
     stash[keysOfStash[0]] -= 1;
     if(stash[keysOfStash[0]] == 0) {delete stash[keysOfStash[0]]}
     i++;
+    if (i == elves.length){i = 0}
     createAssignment();
   }
 
@@ -177,6 +181,7 @@ function assignPreferredGems(tree, wishes, stash, elves, gems) {
       if (item[idx] >= maxWishes) {
         idxWhoNeed = i;
         whoNeed = elves[i];
+        maxWishes = item[idx];
       }
     });
   }
@@ -201,6 +206,31 @@ function assignPreferredGems(tree, wishes, stash, elves, gems) {
 }
 
 function nextState(state, assignment, elves, gems) {
+  var keysAsnt = Object.keys(assignment);
+  var elf;
+  var gem;
+  var amount;
+  var state = state;
+  function addNewParams(key) {
+    elf = elves.indexOf(key);
+    var keysOfGems = Object.keys(assignment[key]);
+    for (let i = 0; i < keysOfGems.length; i++) {
+      gem = gems.indexOf(keysOfGems[i]);
+      amount = assignment[key][keysOfGems[i]];
+      state[elf][gem].pop();
+      state[elf][gem].push(amount);
+    }
+  }
+
+  state.forEach(function(item, i){      //add 0 to state
+    item.forEach(function(item) {
+      item[item.length] = 0;
+    })
+  });
+
+  for (let i = 0; i < keysAsnt.length; i++) {
+    addNewParams(keysAsnt[i])
+  }
+  
   return state;
 }
-
