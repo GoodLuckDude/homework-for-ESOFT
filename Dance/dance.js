@@ -81,11 +81,25 @@ function rightLegIn(elf) {
   });
 }
 
-function handsUp(elf) {
+// function handsUp(elf) {
+//   return new Promise((resolve) => {
+//     leftHandUp(elf)
+//     .then(rightHandUp(elf))
+//     .then(resolve)
+//   })
+// }
+
+function doSomePromisesAsinc(arrayOfPromises) {
+  return Promise.all(arrayOfPromises)[0]
+}
+
+function handsUpDown(elf) {
   return new Promise((resolve) => {
-    leftHandUp(elf)
-    .then(rightHandUp(elf))
-    .then(resolve)
+    leftHandUp(elf).then(rightHandUp(elf)).
+    then((elf) => {
+      leftHandDown(elf).then(rightHandDown(elf)).
+      then(resolve)
+    })
   })
 }
 
@@ -99,11 +113,12 @@ function handsUpDown(elf) {
   })
 }
 
+
 function doDrive(elf) {
   return new Promise((resolve) => {
     handsUpDown(elf)
       .then(handsUpDown)
-      .then((elf) => {resolve (elf)})
+      .then(resolve)
   })
 }
 
@@ -129,7 +144,7 @@ function delay(ms) {
 // сейчас демонстрируется всем эльфам. Здесь нужно дать команду эльфу выполнить
 // какую-то фигуру или команду и вернуть Promise
 function displayGemToElf(elf, gem) {
-  return doDrive(elf)
+  return handsUpDown(elf)
 }
 
 

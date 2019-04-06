@@ -100,11 +100,11 @@ describe("Эльф должен делать простые движения", f
 describe("функция doDrive должна", function() {
 	it("после выполнения опустить обе руки эльфа", function(done) {
 		let elf = {
-			danceSpeed: 10,
+			danceSpeed: 1000,
 			stance: [1, 1, 0, 0]
 		}
 
-		handsUpDown(elf).then((elf) => {
+		doDrive(elf).then((elf) => {
 			expect(elf.stance).toEqual([0, 0, 0, 0])
 			done();
 		})
@@ -124,7 +124,6 @@ describe("функция doWave должна", function() {
 		})
 	});
 });
-
 
 
 
