@@ -12,7 +12,7 @@ let allGems = ['Алмаз', 'Хризолит', 'Эвклаз', 'Корунд',
 function leftHandUp(elf) {
   return new Promise((resolve) => {
     setTimeout(() => {
-      elf.stance = [1, 0, 0, 0];
+      elf.stance = [1, elf.stance[1], elf.stance[2], elf.stance[3]];
       resolve(elf);
     }, elf.danceSpeed);
   });
@@ -21,7 +21,7 @@ function leftHandUp(elf) {
 function leftHandDown(elf) {
   return new Promise((resolve) => {
     setTimeout(() => {
-      elf.stance = [0, 0, 0, 0];
+      elf.stance = [0, elf.stance[1], elf.stance[2], elf.stance[3]];
       resolve(elf);
     }, elf.danceSpeed);
   });
@@ -30,6 +30,7 @@ function leftHandDown(elf) {
 function rightHandUp(elf) {
   return new Promise((resolve) => {
     setTimeout(() => {
+      elf.stance = [elf.stance[0], 1, elf.stance[2], elf.stance[3]];
       resolve(elf);
     }, elf.danceSpeed);
   });
@@ -38,17 +39,97 @@ function rightHandUp(elf) {
 function rightHandDown(elf) {
   return new Promise((resolve) => {
     setTimeout(() => {
+      elf.stance = [elf.stance[0], 0, elf.stance[2], elf.stance[3]];
       resolve(elf);
     }, elf.danceSpeed);
   });
 }
 
+function leftLegOut(elf) {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      elf.stance = [elf.stance[0], elf.stance[1], 1, elf.stance[3]];
+      resolve(elf);
+    }, elf.danceSpeed);
+  });
+}
+
+function leftLegIn(elf) {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      elf.stance = [elf.stance[0], elf.stance[1], 0, elf.stance[3]];
+      resolve(elf);
+    }, elf.danceSpeed);
+  });
+}
+
+function rightLegOut(elf) {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      elf.stance = [elf.stance[0], elf.stance[1], elf.stance[2], 1];
+      resolve(elf);
+    }, elf.danceSpeed);
+  });
+}
+
+function rightLegIn(elf) {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      elf.stance = [elf.stance[0], elf.stance[1], elf.stance[2], 0];
+      resolve(elf);
+    }, elf.danceSpeed);
+  });
+}
+
+function handsUp(elf) {
+  return new Promise((resolve) => {
+    leftHandUp(elf)
+    .then(rightHandUp(elf))
+    .then(resolve)
+  })
+}
+
+function handsUpDown(elf) {
+  return new Promise((resolve) => {
+    leftHandUp(elf).then(rightHandUp(elf)).
+    then((elf) => {
+      leftHandDown(elf).then(rightHandDown(elf)).
+      then(resolve)
+    })
+  })
+}
+
+function doDrive(elf) {
+  return new Promise((resolve) => {
+    handsUpDown(elf)
+      .then(handsUpDown)
+      .then((elf) => {resolve (elf)})
+  })
+}
+
+function doWave(elf) {
+  return new Promise((resolve) => {
+    handsUpDown(elf)
+      .then(handsUpDown)
+      .then(resolve);
+  })
+}
+
+
+
+function delay(ms) {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(ms);
+    }, ms);
+  });
+}
 
 // Эта функция принимает в качестве аргумента эльфа и драгоценность, которая
 // сейчас демонстрируется всем эльфам. Здесь нужно дать команду эльфу выполнить
 // какую-то фигуру или команду и вернуть Promise
 function displayGemToElf(elf, gem) {
-  return leftHandUp(elf).then(leftHandDown);
+  return doDrive(elf)
 }
 
 
