@@ -81,70 +81,75 @@ function rightLegIn(elf) {
   });
 }
 
-// function handsUp(elf) {
-//   return new Promise((resolve) => {
-//     leftHandUp(elf)
-//     .then(rightHandUp(elf))
-//     .then(resolve)
-//   })
-// }
+function handsUp(elf) {
+return Promise.all( [leftHandUp(elf), rightHandUp(elf)] ).then(resolves => resolves[0])
+}
 
-function doSomePromisesAsinc(arrayOfPromises) {
-  return Promise.all(arrayOfPromises)[0]
+function handsDown(elf) {
+  return Promise.all( [leftHandDown(elf), rightHandDown(elf)] ).then(resolves => resolves[0])
 }
 
 function handsUpDown(elf) {
   return new Promise((resolve) => {
-    leftHandUp(elf).then(rightHandUp(elf)).
-    then((elf) => {
-      leftHandDown(elf).then(rightHandDown(elf)).
-      then(resolve)
+    handsUp(elf).then(handsDown).then(resolve)
     })
-  })
 }
 
-function handsUpDown(elf) {
-  return new Promise((resolve) => {
-    leftHandUp(elf).then(rightHandUp(elf)).
-    then((elf) => {
-      leftHandDown(elf).then(rightHandDown(elf)).
-      then(resolve)
-    })
-  })
+function legsOut(elf) {
+  return Promise.all( [leftLegOut(elf), rightLegOut(elf)] ).then(resolves => resolves[0])
 }
-
+  
+function legsIn(elf) {
+  return Promise.all( [leftLegIn(elf), rightLegIn(elf)] ).then(resolves => resolves[0])
+}
 
 function doDrive(elf) {
   return new Promise((resolve) => {
-    handsUpDown(elf)
-      .then(handsUpDown)
-      .then(resolve)
+    handsUpDown(elf).then(handsUpDown).then(resolve)
   })
 }
 
 function doWave(elf) {
   return new Promise((resolve) => {
-    handsUpDown(elf)
-      .then(handsUpDown)
-      .then(resolve);
+    leftHandUp(elf).then(rightHandUp).then(leftHandDown).then(rightHandDown).then(resolve)
   })
 }
 
-
-
-function delay(ms) {
+function doFeint(elf) {
   return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(ms);
-    }, ms);
-  });
+    legsIn(elf).then(legsOut).then(resolve)
+  })
+}
+
+function doLeftSplit(elf) {
+  return new Promise((resolve) => {
+    leftHandUp(elf).then(leftLegOut).then(resolve)
+  })
+}
+
+function doRightSplit(elf) {
+  return new Promise((resolve) => {
+    rightHandUp(elf).then(rightLegOut).then(resolve)
+  })
+}
+
+function doReverse(elf) {
+  return new Promise((resolve) => {
+    legsIn(elf).then(handsUp).then(legsOut).then(handsDown).then(resolve)
+  })
+}
+
+function doPinwheel(elf) {
+  return new Promise((resolve) => {
+    leftLegOut(elf).then(leftHandUp).then(rightHandUp).then(rightLegOut).then(resolve)
+  })
 }
 
 // Эта функция принимает в качестве аргумента эльфа и драгоценность, которая
 // сейчас демонстрируется всем эльфам. Здесь нужно дать команду эльфу выполнить
 // какую-то фигуру или команду и вернуть Promise
 function displayGemToElf(elf, gem) {
-  return handsUpDown(elf)
+  return doDrive(elf).then(doFeint).then(doPinwheel)
 }
 
 

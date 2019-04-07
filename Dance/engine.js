@@ -23,13 +23,13 @@ function drawElf(elf) {
     lm = '<';
   }
 
-  if (elf.stance[2] == 1) {
+  if (elf.stance[2] == 0) {
     rb = '/';
   } else {
     rb = '\\';
   }
 
-  if (elf.stance[3] == 1) {
+  if (elf.stance[3] == 0) {
     lb = '\\';
   } else {
     lb = '/';
@@ -37,7 +37,7 @@ function drawElf(elf) {
 
   return {
     head: lt + elf.head + rt,
-    torso: lm + '(   )' + rm,
+    torso: lm + "(\\:/)" + rm,
     legs: ' ' + lb + '   ' + rb + ' '
   }
 }

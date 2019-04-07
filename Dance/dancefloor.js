@@ -1,12 +1,15 @@
 // Это ваш танец: через какой промежуток времени показать какую драгоценность
 let dance = [
-  [1000, allGems[0]],
+  [4000, allGems[0]],
+  [4000, allGems[0]],
+  [4000, allGems[0]],
+  [4000, allGems[allGems.indexOf("Гиацинт")]],
 ];
 
 // Это ваша танцевальная группа
 let elves = [{
   name: allElves[0],
-  head: '(>_<)',
+  head: '(ᵔᴗᵔ)',
   danceSpeed: 200,
   stance: [0, 0, 0, 0],
   favouriteGems: [allGems[0]],
@@ -14,7 +17,7 @@ let elves = [{
 },
 {
   name: allElves[1],
-  head: '(o_o)',
+  head: '(>_<)',
   danceSpeed: 200,
   stance: [0, 0, 0, 0],
   favouriteGems: [allGems[1]],
@@ -30,7 +33,7 @@ let elves = [{
 },
 {
   name: allElves[3],
-  head: '(-_-)',
+  head: "('_')",
   danceSpeed: 200,
   stance: [0, 0, 0, 0],
   favouriteGems: [allGems[1]],
@@ -38,7 +41,7 @@ let elves = [{
 },
 {
   name: allElves[4],
-  head: "('_')",
+  head: "(ᵔωᵔ)",
   danceSpeed: 200,
   stance: [0, 0, 0, 0],
   favouriteGems: [allGems[1]],
