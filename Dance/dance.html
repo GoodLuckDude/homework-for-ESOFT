@@ -2,12 +2,20 @@
 <head>
 	<title>Танцы с драгоценностями</title>
 	<meta charset="UTF-8">
+	<link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-	<span style="font-size: 20px" id = 'currentGem'></span>
-	<span id = 'showcase'> </span>
-	<pre id = 'dancefloor'></pre>
-	<script src="dance.js"></script>
-	<script src="dancefloor.js"></script>
-	<script src="engine.js"></script>
+	<div id = 'scene'>
+		<div id = 'ticker'>
+			<span style="font-size: 50px" id = 'currentGem'></span>
+			<span id = 'showcase'>Подготовка</span>
+		</div>
+		<pre id = 'dancefloor'></pre>
+		<script src="dance.js"></script>
+		<script src="dancefloor.js"></script>
+		<script src="engine.js"></script>
+	</div>
+	<div>
+		<audio autoplay = "true" controls="controls" src="music/8-Bit Universe - Back in Black.wav"></audio>
+	</div>
 </body>

@@ -90,78 +90,194 @@ describe("Эльф должен делать простые движения", f
 
 });
 
-describe("функция doDrive должна", function() {
-	it("после выполнения опустить обе руки эльфа", function(done) {
-		let elf = new Elf([0, 1, 1, 0])
+describe("функции-движения должны возвращать промисы, резолвящиеся в переданного эльфа, и выполнять нужные движения", function() {
+	it("функция doDrive", function(done) {
+		let elf = new Elf([0, 1, 1, 0]);
+		let referenceElf = elf;
 
 		doDrive(elf).then(elf => {
-			expect(elf.stance).toEqual([0, 0, 1, 0])
+			expect(elf).toBe(referenceElf);
+			expect(elf.stance).toEqual([0, 0, 1, 0]);
 			done();
 		})
 	});
-});
 
-describe("функция doWave должна", function() {
-	it("после выполнения опустить обе руки эльфа", function(done) {
-		let elf = new Elf([0, 0, 1, 1])
+	it("функция doWave", function(done) {
+		let elf = new Elf([0, 0, 1, 1]);
+		let referenceElf = elf;
 
 		doWave(elf).then((elf) => {
-			expect(elf.stance).toEqual([0, 0, 1, 1])
+			expect(elf).toBe(referenceElf);
+			expect(elf.stance).toEqual([0, 0, 1, 1]);
 			done();
 		})
 	});
-});
 
-describe("функция doFeint должна", function() {
-	it("после выполнения выставить обе ноги эльфа", function(done) {
-		let elf = new Elf([1, 0, 0, 1])
+	it("функция doFeint", function(done) {
+		let elf = new Elf([1, 0, 0, 1]);
+		let referenceElf = elf;
 
 		doFeint(elf).then((elf) => {
-			expect(elf.stance).toEqual([1, 0, 1, 1])
+			expect(elf).toBe(referenceElf);
+			expect(elf.stance).toEqual([1, 0, 1, 1]);
 			done();
 		})
 	});
-});
 
-describe("функция doLeftSplit должна", function() {
-	it("после выполнения поднять левую руку и выставить левую ногу эльфа", function(done) {
-		let elf = new Elf([0, 1, 0, 1])
+	it("функция doLeftSplit", function(done) {
+		let elf = new Elf([0, 1, 0, 1]);
+		let referenceElf = elf;
 
 		doLeftSplit(elf).then((elf) => {
-			expect(elf.stance).toEqual([1, 1, 1, 1])
+			expect(elf).toBe(referenceElf);
+			expect(elf.stance).toEqual([1, 1, 1, 1]);
 			done();
 		})
 	});
-});
-
-describe("функция doRightSplit должна", function() {
-	it("после выполнения поднять правую руку и выставить правую ногу эльфа", function(done) {
-		let elf = new Elf([1, 0, 1, 0])
+	
+	it("функция doRightSplit", function(done) {
+		let elf = new Elf([1, 0, 1, 0]);
+		let referenceElf = elf;
 
 		doRightSplit(elf).then((elf) => {
-			expect(elf.stance).toEqual([1, 1, 1, 1])
+			expect(elf).toBe(referenceElf);
+			expect(elf.stance).toEqual([1, 1, 1, 1]);
 			done();
 		})
 	});
-});
 
-describe("функция doReverse должна", function() {
-	it("после выполнения поднять правую руку и выставить правую ногу эльфа", function(done) {
-		let elf = new Elf([1, 0, 1, 0])
+	it("функция doReverse", function(done) {
+		let elf = new Elf([1, 0, 1, 0]);
+		let referenceElf = elf;
 
 		doReverse(elf).then((elf) => {
-			expect(elf.stance).toEqual([0, 0, 1, 1])
+			expect(elf).toBe(referenceElf);
+			expect(elf.stance).toEqual([0, 0, 1, 1]);
+			done();
+		})
+	});
+	
+	it("функция doPinwheel", function(done) {
+		let elf = new Elf([1, 0, 1, 0]);
+		let referenceElf = elf;
+
+		doPinwheel(elf).then((elf) => {
+			expect(elf).toBe(referenceElf);
+			expect(elf.stance).toEqual([1, 1, 1, 1]);
+			done();
+		})
+	});
+
+	it("функция startPosition", function(done) {
+		let elf = new Elf([1, 0, 1, 0]);
+		let referenceElf = elf;
+
+		startPosition(elf).then((elf) => {
+			expect(elf).toBe(referenceElf);
+			expect(elf.stance).toEqual([0, 0, 1, 1]);
+			done();
+		})
+	});
+
+	it("функция finalPosition", function(done) {
+		let elf = new Elf([0, 1, 0, 1]);
+		let referenceElf = elf;
+
+		finalPosition(elf).then((elf) => {
+			expect(elf).toBe(referenceElf);
+			expect(elf.stance).toEqual([1, 1, 2, 2]);
+			done();
+		})
+	});
+
+});
+
+describe("Функция pause должна", function() {
+	it("заставить эльфа сделать паузу, равную его danceSpeed", function(done) {
+		let elf = new Elf([1, 1, 0, 0]);
+
+		pause(elf).then((elf) => {
+			expect(elf.stance).toEqual([1, 1, 0, 0]);
+			done();
+		})
+	});
+
+	it("вернуть промис, резолвящийся в переданного эльфа", function(done) {
+		let elf = new Elf([0, 1, 0, 1]);
+		let referenceElf = elf;
+
+		pause(elf).then((elf) => {
+			expect(elf).toBe(referenceElf);
 			done();
 		})
 	});
 });
 
-describe("функция doPinwheel должна", function() {
-	it("после выполнения всё поднять и всё выставить", function(done) {
-		let elf = new Elf([1, 0, 1, 0])
+describe("Функция increaseSpeed должна", function() {
+	it("увеличить danceSpeed в 2 раза", function(done) {
+		let elf = new Elf([1, 1, 0, 0]);
+		let speed = elf.danceSpeed;
 
-		doPinwheel(elf).then((elf) => {
-			expect(elf.stance).toEqual([1, 1, 1, 1])
+		increaseSpeed(elf).then((elf) => {
+			expect(elf.danceSpeed).toEqual(speed * 2);
+			done();
+		})
+	});
+
+	it("вернуть промис, резолвящийся в переданного эльфа", function(done) {
+		let elf = new Elf([0, 1, 0, 1]);
+		let referenceElf = elf;
+
+		increaseSpeed(elf).then((elf) => {
+			expect(elf).toBe(referenceElf);
+			done();
+		})
+	});
+});
+
+describe("Функция reduceSpeed должна", function() {
+	it("уменьшить danceSpeed в 2 раза", function(done) {
+		let elf = new Elf([1, 1, 0, 0]);
+		let speed = elf.danceSpeed;
+
+		reduceSpeed(elf).then((elf) => {
+			expect(elf.danceSpeed).toEqual(speed * .5);
+			done();
+		})
+	});
+
+	it("вернуть промис, резолвящийся в переданного эльфа", function(done) {
+		let elf = new Elf([0, 1, 0, 1]);
+		let referenceElf = elf;
+
+		reduceSpeed(elf).then((elf) => {
+			expect(elf).toBe(referenceElf);
+			done();
+		})
+	});
+});
+
+describe("эльф должен уметь", function() {
+	it("выполнять несколько движения последовательно", function(done) {
+		let elf = new Elf([0, 1, 0, 1]);
+		let referenceElf = elf;
+
+		startPosition(elf).then(doDrive).then(doWave).then(doPinwheel).then((elf) => {
+			expect(elf).toBe(referenceElf);
+			expect(elf.stance).toEqual([1, 1, 1, 1]);
+			done();
+		})
+	});
+});
+
+describe("Функция synchronization должна", function() {
+	it("вернуть что-то вменяемое", function(done) {
+		let elf1 = new Elf([1, 1, 0, 0]);
+		let elf2 = new Elf([1, 1, 0, 0]);
+		let arrOfElvesPromises = [doDrive(elf1), doDrive(elf2)];
+
+		synchronization(arrOfElvesPromises).then((elvesPromises) => {
+			expect(elvesPromises).toBe(arrOfElvesPromises);
 			done();
 		})
 	});

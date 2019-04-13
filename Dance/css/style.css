@@ -1,0 +1,24 @@
+* {
+  color: #fff;
+  font-size: 30px;
+}
+
+#scene {
+  width: 1730px;
+  height: 800px;
+  margin: auto;
+  background-image: url(../images/scene.jpg);
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+#ticker {
+  padding-top: 15px;
+  margin-left: 30%;
+}
+
+#dancefloor {
+  font-size: 50px;
+  margin-left: 15%;
+  margin-top: 327px;
+}

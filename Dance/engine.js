@@ -25,12 +25,16 @@ function drawElf(elf) {
 
   if (elf.stance[2] == 0) {
     rb = '/';
+  } else if (elf.stance[2] == 2){
+    rb = '|';
   } else {
     rb = '\\';
   }
 
   if (elf.stance[3] == 0) {
     lb = '\\';
+  } else if (elf.stance[3] == 2){
+    lb = '|';
   } else {
     lb = '/';
   }
