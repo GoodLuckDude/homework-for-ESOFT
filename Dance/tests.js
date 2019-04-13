@@ -219,7 +219,7 @@ describe("Функция increaseSpeed должна", function() {
 		let speed = elf.danceSpeed;
 
 		increaseSpeed(elf).then((elf) => {
-			expect(elf.danceSpeed).toEqual(speed * 2);
+			expect(elf.danceSpeed).toEqual(speed * .5);
 			done();
 		})
 	});
@@ -241,7 +241,7 @@ describe("Функция reduceSpeed должна", function() {
 		let speed = elf.danceSpeed;
 
 		reduceSpeed(elf).then((elf) => {
-			expect(elf.danceSpeed).toEqual(speed * .5);
+			expect(elf.danceSpeed).toEqual(speed * 2);
 			done();
 		})
 	});

@@ -110,6 +110,18 @@ function doDrive(elf) {
   })
 }
 
+function doMonkey(elf) {      //Горный хрусталь [25]
+  return new Promise((resolve) => {
+    leftHandUp(elf).then(rightHandUp).then(handsDown).then(resolve)
+  })
+}
+
+function doBreakDance(elf) {      //Дымчатый кварц [26]
+  return new Promise((resolve) => {
+    rightLegIn(elf).then(leftLegIn).then(rightLegOut).then(leftLegOut).then(legsIn).then(legsOut).then(resolve)
+  })
+}
+
 function doWave(elf) {
   return new Promise((resolve) => {
     leftHandUp(elf).then(rightHandUp).then(leftHandDown).then(rightHandDown).then(resolve)
@@ -166,14 +178,14 @@ function pause(elf) {
 
 function increaseSpeed(elf) {
   return new Promise((resolve) => {
-    elf.danceSpeed *= 2;
+    elf.danceSpeed *= .5;
     resolve(elf);
   });
 }
 
 function reduceSpeed(elf) {
   return new Promise((resolve) => {
-    elf.danceSpeed *= .5;
+    elf.danceSpeed *= 2;
     resolve(elf);
   });
 }
@@ -199,6 +211,12 @@ function doFreestyle(elf) {
 // какую-то фигуру или команду и вернуть Promise
 function displayGemToElf(elf, gem) {
   switch(gem) {
+    case elf.favouriteGems[ elf.favouriteGems.indexOf(gem) ]:
+      return handsUp(elf)
+
+    case elf.dislikedGems[ elf.dislikedGems.indexOf(gem) ]:
+      return handsDown(elf)
+
     case allGems[24]:
       return doDrive(elf)
     
@@ -226,17 +244,38 @@ function displayGemToElf(elf, gem) {
     case allGems[39]:
       return finalPosition(elf)
 
+    case allGems[25]:
+      return doMonkey(elf)
+
+    case allGems[26]:
+      return doBreakDance(elf)
+
+    case allGems[27]:
+      return handsUp(elf)
+
+    case allGems[30]:
+      return handsDown(elf)
+
+    case allGems[31]:
+      return legsIn(elf)
+
+    case allGems[28]:
+      return doMonkey(elf).then(doWave).then(doPinwheel)
+
+    case allGems[29]:
+      return doDrive(elf).then(doFeint).then(doWave).then(doReverse)
+
+    case allGems[37]:
+      return increaseSpeed(elf)
+
+    case allGems[36]:
+      return reduceSpeed(elf)
+
     case allGems[38]:
       return pause(elf)
 
-    case elf.favouriteGems[ elf.favouriteGems.indexOf(gem) ]:
-      return handsUp(elf)
-
-    case elf.dislikedGems[ elf.dislikedGems.indexOf(gem) ]:
-      return handsDown(elf)
-
     case allGems[33]:
-      return
+      return 
 
     default:
       return doFreestyle(elf) 
