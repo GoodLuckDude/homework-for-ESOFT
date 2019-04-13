@@ -1,3 +1,5 @@
+//Дерево через создание одномерных деревьев посе чего комбинация их через dummy.
+
 function dummySegmentTree(array, fn, N) {
   return function(from, to){
     let result = N;
@@ -104,14 +106,14 @@ function addAssignmentPosition(assignment, elf, gem, amount) {
 
 function assignEqually(tree, wishes, stash, elves, gems, week) {
   var assignment = {};
-  // var keysOfStash = Object.keys(stash);
+  // var gemsOfStash = Object.keys(stash);
   // let quantitiesOfGems = [];
 
   // elves.forEach((elf, indxOfElf) => {
   //   quantitiesOfGems.push( tree(indxOfElf, indxOfElf + 1)(0, gems.length)(0, week) );
   // })
 
-  // keysOfStash.forEach((gem) => {
+  // gemsOfStash.forEach((gem) => {
   //   for(let i = 0; i < stash[gem]; i++) {
   //     let elfLoser;
   //     let currentMinAmount = +Infinity;
@@ -146,7 +148,7 @@ function assignEqually(tree, wishes, stash, elves, gems, week) {
   var whoNeed;
   var idxWhoNeed;
   var minGemsCount = Infinity;
-  var keysOfStash;
+  var gemsOfStash;
   var currentAmountGems = [];                  // [i] = amount of elf's (elves[i]) gems
 
   function findWhoNeed() {
@@ -160,17 +162,17 @@ function assignEqually(tree, wishes, stash, elves, gems, week) {
   }
   function createAssignment() {
     findWhoNeed();
-    keysOfStash = Object.keys(stash);
-    if (keysOfStash.length > 0) {
+    gemsOfStash = Object.keys(stash);
+    if (gemsOfStash.length > 0) {
       currentAmountGems[idxWhoNeed] += 1;
       if(!assignment[whoNeed]) { assignment[whoNeed] = {} }
-      stash[keysOfStash[0]] -= 1;
-      if (assignment[whoNeed][keysOfStash[0]]) {
-        assignment[whoNeed][keysOfStash[0]] += 1
+      stash[gemsOfStash[0]] -= 1;
+      if (assignment[whoNeed][gemsOfStash[0]]) {
+        assignment[whoNeed][gemsOfStash[0]] += 1
       } else {
-        assignment[whoNeed][keysOfStash[0]] = 1
+        assignment[whoNeed][gemsOfStash[0]] = 1
       }
-      if (stash[keysOfStash[0]] == 0) { delete stash[keysOfStash[0]] }
+      if (stash[gemsOfStash[0]] == 0) { delete stash[gemsOfStash[0]] }
       minGemsCount++;
       createAssignment();
     }
@@ -186,10 +188,10 @@ function assignEqually(tree, wishes, stash, elves, gems, week) {
 
 function assignAtLeastOne(tree, wishes, stash, elves, gems, week) {
   var assignment = {};
-  var keysOfStash = Object.keys(stash);
+  var gemsOfStash = Object.keys(stash);
   var indxOfElf = 0;
 
-  keysOfStash.forEach((gem) => {
+  gemsOfStash.forEach((gem) => {
     for (let i = 0; i < stash[gem]; i++, indxOfElf++) {
       addAssignmentPosition(assignment, elves[indxOfElf], gem, 1)
       if(indxOfElf == elves.length-1) {indxOfElf = 0}
@@ -201,16 +203,16 @@ function assignAtLeastOne(tree, wishes, stash, elves, gems, week) {
 
 function assignPreferredGems(tree, wishes, stash, elves, gems) {
   var assignment = {};
-  var keysOfStash = Object.keys(stash);
+  var gemsOfStash = Object.keys(stash);
 
-  keysOfStash.forEach((gem) => {
+  gemsOfStash.forEach((gem) => {
     let elf;
-    let maxWishe = -Infinity;
+    let maxWish = -Infinity;
     let indxOfGem = gems.indexOf(gem);
     
     wishes.forEach((wish, indxOfElf) => {
-      if (wish[indxOfGem] < maxWishe) {return}
-      maxWishe = wish[indxOfGem];
+      if (wish[indxOfGem] < maxWish) {return}
+      maxWish = wish[indxOfGem];
       elf = elves[indxOfElf];
     })
 
@@ -237,9 +239,9 @@ function nextState(state, assignment, elves, gems) {
     }
   }
 
-  state.forEach(function(item, i){      //add 0 to state
-    item.forEach(function(item) {
-      item[item.length] = 0;
+  state.forEach(function(elf){      //add 0 to state
+    elf.forEach(function(gem) {
+      gem[gem.length] = 0;
     })
   });
 

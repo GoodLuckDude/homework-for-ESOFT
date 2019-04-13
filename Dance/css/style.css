@@ -4,7 +4,7 @@
 }
 
 #scene {
-  width: 100%;
+  width: 1830px;
   height: 800px;
   margin: auto;
   background-image: url(../images/scene.jpg);
@@ -14,11 +14,11 @@
 
 #ticker {
   padding-top: 15px;
-  margin-left: 30%;
+  margin-left: 600px;
 }
 
 #dancefloor {
   font-size: 50px;
-  margin-left: 14%;
-  margin-top: 327px;
+  margin-left: 250px;
+  margin-top: 325px;
 }

@@ -3,6 +3,8 @@ var listOfStance = [ [0, 0, 0, 0], [0, 0, 1, 1], [1, 1, 0, 0], [1, 1, 1, 1] ]
 function Elf(stance) {
 	this.danceSpeed = 10;
 	this.stance = stance;
+	this.favouriteGems = [];
+	this.dislikedGems = [];
 }
 
 function createElves(listOfStance) {
@@ -257,7 +259,7 @@ describe("Функция reduceSpeed должна", function() {
 	});
 });
 
-describe("эльф должен уметь", function() {
+describe("эльф должен", function() {
 	it("выполнять несколько движения последовательно", function(done) {
 		let elf = new Elf([0, 1, 0, 1]);
 		let referenceElf = elf;
@@ -265,6 +267,50 @@ describe("эльф должен уметь", function() {
 		startPosition(elf).then(doDrive).then(doWave).then(doPinwheel).then((elf) => {
 			expect(elf).toBe(referenceElf);
 			expect(elf.stance).toEqual([1, 1, 1, 1]);
+			done();
+		})
+	});
+
+	it("поднимать руки при виде любимого гема", function(done) {
+		let elf = new Elf([0, 0, 0, 0]);
+		elf.favouriteGems.push(allGems[0]);
+		let gem = allGems[0];
+
+		displayGemToElf(elf, gem).then((elf) => {
+			expect(elf.stance).toEqual([1, 1, 0, 0])
+			done();
+		})
+	});
+
+	it("игнорировать движение при виде любимого гема", function(done) {
+		let elf = new Elf([0, 0, 0, 1]);
+		elf.favouriteGems.push(allGems[18]);
+		let gem = allGems[18];
+
+		displayGemToElf(elf, gem).then((elf) => {
+			expect(elf.stance).toEqual([1, 1, 0, 1])
+			done();
+		})
+	});
+
+	it("опускать руки при виде нелюбимого гема", function(done) {
+		let elf = new Elf([1, 1, 1, 0]);
+		elf.dislikedGems.push(allGems[0]);
+		let gem = allGems[0];
+
+		displayGemToElf(elf, gem).then((elf) => {
+			expect(elf.stance).toEqual([0, 0, 1, 0])
+			done();
+		})
+	});
+
+	it("игнорировать движение при виде нелюбимого гема", function(done) {
+		let elf = new Elf([1, 1, 0, 1]);
+		elf.dislikedGems.push(allGems[18]);
+		let gem = allGems[18];
+
+		displayGemToElf(elf, gem).then((elf) => {
+			expect(elf.stance).toEqual([0, 0, 0, 1])
 			done();
 		})
 	});
