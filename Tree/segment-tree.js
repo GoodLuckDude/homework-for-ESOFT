@@ -1,97 +1,120 @@
-//Дерево через создание одномерных деревьев посе чего комбинация их через dummy.
+//Рекурсивное дерево через создание одномерных деревьев и комбинация их через dummy?
 
 function dummySegmentTree(array, fn, N) {
+  if (Array.isArray(array[0])) {
   return function(from, to){
     let result = N;
     for (let i = from; i < to; i++) {
-      result = fn(result, array[i]);
+      result = fn(array[i], result);
     }
     return result;
+    }
   }
 }
 
-function sqOf2(array) {
-  let sq = 1;
-  while(sq < array.length) {
-    sq *= 2;
-  }
-  let dif = sq - array.length;
-  for (let i = dif; i > 0; i--){
-    array.push(returnN(array, 0))
-  }
-}
+function segmentTree(array, fn, N) {
 
-function fnToRecurce(a, b, fn, N){
-  if (Array.isArray(a)) {
-    return a.map(function (item, i) {
-      return fnToRecurce(item, b[i], fn, N);
-    });
-  } else {
-    return fn(a, b);
-  }
-}
-
-function buildTree(arr, fn, N) {
-  var array = arr;
-//  sqOf2(array);
+  function buildTree(array, fn) {
   var tree = [];
   function build (pos, tl, tr) {
     if (tr < 0) {return}
     if (tl == tr) {
-      if (Array.isArray(array[tl])) {
-        tree[pos] = buildTree(array[tl], fn, N)
-      } else {
       tree[pos] = array[tl];
-      }
     } else {
       var tm = Math.floor((tl + tr) / 2);
       build(pos*2+1, tl, tm);
       build(pos*2+2, tm+1, tr);
-      tree[pos] = fnToRecurce(tree[pos*2+1], tree[pos*2+2], fn, N)
+      tree[pos] = fn(tree[pos*2+1], tree[pos*2+2])
     }
   };
   build(0, 0, array.length-1);
   return tree;
-}
-
-function returnN(tree, N){
-  if (Array.isArray(tree[0])){
-    return tree[0].map(() => {
-      return returnN(tree[0], N);
-    })
-  } else {
-    return N
   }
-}
 
-
-function segmentTree(array, fn, N) {
   var tree = buildTree(array,fn, N);
+
   function newTree(tree){
     function fromTo(from, to){
-      if (from == to) {return returnN(tree, N)}
-      if (from < 0 || to > (tree.length+1)/2 || to < from) {throw new Error("This range is not valid")}
+      if (from == to) {return N}
+      if (from < 0 || to > array.length || to < from) {throw new Error("This range is not valid")}
       function count (pos, tl, tr){
-        if (tr < from || tl > to-1) {return returnN(tree, N)}
+        if (tr < from || tl > to-1) {return N}
         if (tl >= from && tr < to) {return tree[pos]}
         var tm = Math.floor((tl + tr) / 2);
-        return fnToRecurce(count(pos*2+1, tl, tm), count(pos*2+2, tm+1, tr), fn, N);
+        return fn(count(pos*2+1, tl, tm), count(pos*2+2, tm+1, tr));
       };
-      var result = count(0, 0, (tree.length-1)/2);
-      if (Array.isArray(result)) {
-        return newTree(result);
-      } else {
-        return result
-      }
+      var result = count(0, 0, array.length-1);
+      return result
     }
     return fromTo
   }
+
   return newTree(tree)
 };
 
 
-function recursiveSegmentTree(array, fn, N) {
-  return segmentTree(array, fn, N)
+function recursiveSegmentTree(array, fn, N) {         //Spaghetti code
+  function makeArrayOfTrees (array, fn, N) {
+    let arrayOfTrees = array.map(value => {
+      if(Array.isArray(value[0])) {
+        return makeArrayOfTrees(value, fn, N)
+      } else {
+        return segmentTree(value, fn, N)
+      }
+    })
+    return arrayOfTrees;
+  }
+
+  if (Array.isArray(array[0])) {
+    let arrayOfTrees = makeArrayOfTrees(array, fn, N);
+
+    if(!Array.isArray(array[0][0])) {   //if need to two-dimensional tree
+
+      return function(from, to) {
+        let cutedTrees = arrayOfTrees.filter((elf, indx) => {
+          return (indx >= from && indx < to);
+        })
+        
+        return function(from, to) {
+          let result = N;
+          cutedTrees.forEach(foo => {
+            result = fn(result, foo(from, to));
+          })
+          return result;
+        }
+      }
+    } else {                            //if need to three-dimensional tree
+      return function(from, to) {
+        let cutedTrees = arrayOfTrees.filter((elf, indx) => {
+          return (indx >= from && indx < to);
+        })
+
+        return function(from, to) {
+          let resultedTrees = [];
+
+          cutedTrees.forEach((elf, indxOfElf) => {
+            cutedTrees[indxOfElf] = elf.filter((gem, indx) => {
+              return (indx >= from && indx < to);
+            })
+          })
+
+          resultedTrees = resultedTrees.concat(cutedTrees);
+
+          return function(from, to) {
+            let result = N;
+            resultedTrees.forEach((arrayOfTrees) => {
+              arrayOfTrees.forEach(tree => {
+                result = fn(result, tree(from, to));
+              })
+            })
+            return result;
+          }
+        }
+      }
+    }
+  } else {
+    return segmentTree(array, fn, N);
+  }
 }
 
 function getElfTree(array) {
@@ -106,83 +129,31 @@ function addAssignmentPosition(assignment, elf, gem, amount) {
 
 function assignEqually(tree, wishes, stash, elves, gems, week) {
   var assignment = {};
-  // var gemsOfStash = Object.keys(stash);
-  // let quantitiesOfGems = [];
+  var gemsOfStash = Object.keys(stash);
+  let quantitiesOfGems = [];              //current amount of elves's gems
 
-  // elves.forEach((elf, indxOfElf) => {
-  //   quantitiesOfGems.push( tree(indxOfElf, indxOfElf + 1)(0, gems.length)(0, week) );
-  // })
+  elves.forEach((elf, indxOfElf) => {     //fill 'quantitiesOfGems'
+    quantitiesOfGems.push( tree(indxOfElf, indxOfElf + 1)(0, gems.length)(0, week) );
+  })
 
-  // gemsOfStash.forEach((gem) => {
-  //   for(let i = 0; i < stash[gem]; i++) {
-  //     let elfLoser;
-  //     let currentMinAmount = +Infinity;
+  gemsOfStash.forEach((gem) => {          //fill assignment
+    for(let i = 0; i < stash[gem]; i++) {
+      let elfLoser;
+      let currentMinAmount = +Infinity;
 
-  //     quantitiesOfGems.forEach((gemsOfElf, indxOfElf) => {
-  //       if (gemsOfElf < currentMinAmount) {
-  //         currentMinAmount = gemsOfElf;
-  //         elfLoser = elves[indxOfElf];
-  //       }
-  //     })
+      quantitiesOfGems.forEach((gemsOfElf, indxOfElf) => {  //find elfLoser
+        if (gemsOfElf < currentMinAmount) {
+          currentMinAmount = gemsOfElf;
+          elfLoser = elves[indxOfElf];
+        }
+      })
       
-  //     quantitiesOfGems[elves.indexOf(elfLoser)]++;
-  //     addAssignmentPosition(assignment, elfLoser, gem, 1);
-  //   }
-  // })
-
-  // return assignment
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  var whoNeed;
-  var idxWhoNeed;
-  var minGemsCount = Infinity;
-  var gemsOfStash;
-  var currentAmountGems = [];                  // [i] = amount of elf's (elves[i]) gems
-
-  function findWhoNeed() {
-    for (let i = 0; i < elves.length; i++) {
-      if (currentAmountGems[i] <= minGemsCount) {
-        minGemsCount = currentAmountGems[i];
-        whoNeed = elves[i];
-        idxWhoNeed = i;
-      }
+      quantitiesOfGems[elves.indexOf(elfLoser)]++;  //add 1 gem to 'elfLoser'
+      addAssignmentPosition(assignment, elfLoser, gem, 1);  //note this in assignment
     }
-  }
-  function createAssignment() {
-    findWhoNeed();
-    gemsOfStash = Object.keys(stash);
-    if (gemsOfStash.length > 0) {
-      currentAmountGems[idxWhoNeed] += 1;
-      if(!assignment[whoNeed]) { assignment[whoNeed] = {} }
-      stash[gemsOfStash[0]] -= 1;
-      if (assignment[whoNeed][gemsOfStash[0]]) {
-        assignment[whoNeed][gemsOfStash[0]] += 1
-      } else {
-        assignment[whoNeed][gemsOfStash[0]] = 1
-      }
-      if (stash[gemsOfStash[0]] == 0) { delete stash[gemsOfStash[0]] }
-      minGemsCount++;
-      createAssignment();
-    }
-  }
-  for (let i = 0; i < elves.length; i++) {      //counting of elves's gems
-    let count = tree(i, i+1)(0, gems.length)(0, week);
-    currentAmountGems.push(count)
-  }
-  createAssignment();
-  return assignment;
+  })
+
+  return assignment
 }
 
 
@@ -246,7 +217,7 @@ function nextState(state, assignment, elves, gems) {
   });
 
   for (let i = 0; i < keysAssig.length; i++) {
-    addNewParam(keysAssig[i])
+    addNewParam(keysAssig[i]);
   }
   
   return state;

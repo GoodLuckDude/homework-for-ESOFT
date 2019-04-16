@@ -4,7 +4,7 @@
 }
 
 #scene {
-  width: 1830px;
+  width: 1725px;
   height: 800px;
   margin: auto;
   background-image: url(../images/scene.jpg);
@@ -21,4 +21,8 @@
   font-size: 50px;
   margin-left: 250px;
   margin-top: 325px;
+}
+
+#music {
+  margin-left: 42%;
 }

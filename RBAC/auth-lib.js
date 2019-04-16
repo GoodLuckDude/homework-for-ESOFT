@@ -1,7 +1,5 @@
 var allUsers = [
 	// {username: "admin", password: "1234", groups: [allGroups[1]]},
-	// {username: "sobakajozhec", password: "ekh228", groups: []},
-  // {username: "patriot007", password: "russiaFTW", groups: []}
 ];
 
 var allRights = [
@@ -10,10 +8,6 @@ var allRights = [
 
 var allGroups = [
 	// {name: "admin", rights: [allRights[2]]},
-	// {name: "manager", rights: [allRights[0]]},
-  // {name: "basic", rights: [allRights[1], allRights[3]]}
-  // OR {rights: [allRights[2]]},
-  // OR {name: "adept", rights: [allRights[3]], users: [allUsers[2], allUsers[1]]} 
 ];
 
 var session;
@@ -58,7 +52,6 @@ function deleteGroup(group) {
     allUsers.forEach(function(item) {
       if ( item.groups.indexOf(group) >= 0 ) {
         removeUserFromGroup(item, group);
-        //item.groups.splice(item.groups.indexOf(group), 1);
       }
     });
     allGroups.splice(i, 1);
@@ -91,9 +84,6 @@ function removeUserFromGroup(user, group) {
   var j = allGroups.indexOf(group);
   var k = user.groups.indexOf(group);
 
-  // if ( i == -1 || j == -1 || k == -1 ) {
-  //   throw new Error("Can't delete user from group...")
-  // }
   if ( i == -1 ) {
     throw new Error("Can't delete user from group (user)")
   }
@@ -124,7 +114,6 @@ function deleteRight(right) {
     allGroups.forEach(function(item){
       if ( item.rights.indexOf(right) >= 0 ) {
         removeRightFromGroup(right, item);
-        //item.rights.splice(item.rights.indexOf(right), 1);
       }
     });
     allRights.splice(i, 1);
@@ -160,9 +149,6 @@ function removeRightFromGroup(right, group) {
   var j = allGroups.indexOf(group);
   var k = group.rights.indexOf(right);
 
-  // if ( i == -1 || j == -1 || k == -1 ) {
-  //   throw new Error("Can't remove right from group")
-  // }
   if ( i == -1 ) {
     throw new Error("Can't remove right from group (right)")
   }

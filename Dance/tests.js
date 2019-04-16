@@ -92,7 +92,7 @@ describe("Эльф должен делать простые движения", f
 
 });
 
-describe("функции-движения должны возвращать промисы, резолвящиеся в переданного эльфа, и выполнять нужные движения", function() {
+describe("функции-движения должны возвращать что-то вменяемое и выполнять нужные движения", function() {
 	it("функция doDrive", function(done) {
 		let elf = new Elf([0, 1, 1, 0]);
 		let referenceElf = elf;
@@ -204,7 +204,7 @@ describe("Функция pause должна", function() {
 		})
 	});
 
-	it("вернуть промис, резолвящийся в переданного эльфа", function(done) {
+	it("вернуть что-то вменяемое", function(done) {
 		let elf = new Elf([0, 1, 0, 1]);
 		let referenceElf = elf;
 
@@ -226,7 +226,7 @@ describe("Функция increaseSpeed должна", function() {
 		})
 	});
 
-	it("вернуть промис, резолвящийся в переданного эльфа", function(done) {
+	it("вернуть что-то вменяемое", function(done) {
 		let elf = new Elf([0, 1, 0, 1]);
 		let referenceElf = elf;
 
@@ -248,7 +248,7 @@ describe("Функция reduceSpeed должна", function() {
 		})
 	});
 
-	it("вернуть промис, резолвящийся в переданного эльфа", function(done) {
+	it("вернуть что-то вменяемое", function(done) {
 		let elf = new Elf([0, 1, 0, 1]);
 		let referenceElf = elf;
 
